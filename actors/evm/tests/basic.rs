@@ -291,15 +291,23 @@ fn bls_precompile_test(bytecode: Vec<u8>) {
     rt.expect_gas_available(10_000_000_000u64);
     util::invoke_contract(&rt, &failure_params);
 
-    // BUG RELATED TO OPCODE ASSIGNMENT IN G2_ADD AND G1_MSM
-    // // Test G2 Addition
-    // let mut g2_params = vec![];
-    // g2_params.extend_from_slice(&hex::decode("4660d8a1").unwrap()); // function selector for "testG2Add()"
+    // Test G1 MSM
+    let mut g1_msm_params = vec![];
+    g1_msm_params.extend_from_slice(&hex::decode("6a3eee08").unwrap()); // function selector for "testG1MSM()"
+
+    rt.expect_gas_available(10_000_000_000u64);
+    rt.expect_gas_available(10_000_000_000u64);
+    util::invoke_contract(&rt, &g1_msm_params);
+
+
+    // Test G2 Addition
+    let mut g2_params = vec![];
+    g2_params.extend_from_slice(&hex::decode("4660d8a1").unwrap()); // function selector for "testG2Add()"
     
-    // // Reset expectations for the next call
-    // rt.expect_gas_available(10_000_000_000u64);
-    // rt.expect_gas_available(10_000_000_000u64);
-    // util::invoke_contract(&rt, &g2_params);
+    // Reset expectations for the next call
+    rt.expect_gas_available(10_000_000_000u64);
+    rt.expect_gas_available(10_000_000_000u64);
+    util::invoke_contract(&rt, &g2_params);
 
     // Test G2 MSM
     let mut g2_msm_params = vec![];
