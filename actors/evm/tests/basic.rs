@@ -268,7 +268,6 @@ fn bls_precompile() {
     let bytecode = hex::decode(include_str!("contracts/BLSPrecompile.hex")).unwrap();
     bls_precompile_test(bytecode);
 }
-
 fn bls_precompile_test(bytecode: Vec<u8>) {
     let contract = Address::new_id(100);
     let rt = util::init_construct_and_verify(bytecode, |rt| {
@@ -276,10 +275,28 @@ fn bls_precompile_test(bytecode: Vec<u8>) {
         rt.set_origin(contract);
     });
 
+    // Test G1 Addition
     let mut solidity_params = vec![];
-    solidity_params.extend_from_slice(&hex::decode("fa17c461").unwrap()); // function selector, "testG1Add()"
+    solidity_params.extend_from_slice(&hex::decode("fa17c461").unwrap()); // function selector for "testG1Add()"
 
     rt.expect_gas_available(10_000_000_000u64);
     rt.expect_gas_available(10_000_000_000u64);
     util::invoke_contract(&rt, &solidity_params);
+    
+    // Test G1 Addition Failure
+    let mut failure_params = vec![];
+    failure_params.extend_from_slice(&hex::decode("3e6a10bc").unwrap()); // function selector for "testG1AddFailure()"
+
+    rt.expect_gas_available(10_000_000_000u64);
+    rt.expect_gas_available(10_000_000_000u64);
+    util::invoke_contract(&rt, &failure_params);
+    
+    // // Test G2 Addition
+    // let mut g2_params = vec![];
+    // g2_params.extend_from_slice(&hex::decode("4660d8a1").unwrap()); // function selector for "testG2Add()"
+    
+    // // Reset expectations for the next call
+    // rt.expect_gas_available(10_000_000_000u64);
+    // rt.expect_gas_available(10_000_000_000u64);
+    // util::invoke_contract(&rt, &g2_params);
 }
