@@ -4,6 +4,7 @@ pragma solidity ^0.8.19;
 contract BLSPrecompileCheck {
     address constant G1_ADD_PRECOMPILE = address(0x0B);
     // address constant G2_ADD_PRECOMPILE = address(0x0D);
+    address constant G2_MSM_PRECOMPILE = address(0x0E);  // G2 MSM is at address 0x13
 
     /// @notice Asserts that G1 addition precompile at 0x0B correctly computes 2·P
     function testG1Add() public view {
@@ -69,4 +70,28 @@ contract BLSPrecompileCheck {
         // The precompile should fail for invalid points
         require(!success, "Precompile should fail for invalid input");
     }     
+
+    /// @notice Tests G2 multi-scalar multiplication precompile at 0x13
+    function testG2MSM() public view {
+        // Format for G2 MSM input: 
+        // - First 32 bytes: value k (number of pairs)
+        // - For each pair:
+        //   - 32 bytes scalar
+        //   - 128 bytes G2 point (x.a, x.b, y.a, y.b)
+        
+        bytes memory input = hex"00000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be0000000000000000000000000000000000000000000000000000000000000002";
+        
+        // Expected output for this specific input
+        bytes memory EXPECTED_OUTPUT = hex"000000000000000000000000000000001638533957d540a9d2370f17cc7ed5863bc0b995b8825e0ee1ea1e1e4d00dbae81f14b0bf3611b78c952aacab827a053000000000000000000000000000000000a4edef9c1ed7f729f520e47730a124fd70662a904ba1074728114d1031e1572c6c886f6b57ec72a6178288c47c33577000000000000000000000000000000000468fb440d82b0630aeb8dca2b5256789a66da69bf91009cbfe6bd221e47aa8ae88dece9764bf3bd999d95d71e4c9899000000000000000000000000000000000f6d4552fa65dd2638b361543f887136a43253d9c66c411697003f7a13c308f5422e1aa0a59c8967acdefd8b6e36ccf3";
+        bytes32 expectedHash = keccak256(EXPECTED_OUTPUT);
+        
+        // Call precompile
+        (bool success, bytes memory output) = G2_MSM_PRECOMPILE.staticcall(input);
+        
+        require(success, "G2 MSM precompile call failed");
+        require(output.length == 256, "Invalid G2 MSM output length"); // G2 point is 256 bytes
+        
+        bytes32 actualHash = keccak256(abi.encodePacked(output));
+        require(actualHash == expectedHash, "Unexpected G2 MSM output");
+    }
 }
