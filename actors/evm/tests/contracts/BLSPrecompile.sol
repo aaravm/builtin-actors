@@ -6,6 +6,9 @@ contract BLSPrecompileCheck {
     address constant G1_MSM_PRECOMPILE = address(0x0C); // G1 MSM is at 0x0C
     address constant G2_ADD_PRECOMPILE = address(0x0D);
     address constant G2_MSM_PRECOMPILE = address(0x0E);  // G2 MSM is at address 0x13
+    address constant MAP_FP_TO_G1_PRECOMPILE = address(0x10);
+    address constant MAP_FP2_TO_G2_PRECOMPILE = address(0x11);
+    address constant PAIRING_CHECK_PRECOMPILE = address(0x0F);
 
     /// @notice Asserts that G1 addition precompile at 0x0B correctly computes 2·P
     function testG1Add() public view {
@@ -22,7 +25,6 @@ contract BLSPrecompileCheck {
 
         require(actualHash == expectedHash, "Unexpected output");
     }
-    // TODO: Fix G2 addition precompile tests
                                     
     /// @notice Tests G2 addition precompile at 0x0C
     function testG2Add() public view {
@@ -100,4 +102,66 @@ contract BLSPrecompileCheck {
         bytes32 actualHash = keccak256(abi.encodePacked(output));
         require(actualHash == expectedHash, "Unexpected G2 MSM output");
     }
-}
+    /// @notice Tests mapping a field element to a G1 point
+        function testMapFpToG1() public view {
+            // Input is a single field element (32 bytes)
+            bytes memory input = hex"0000000000000000000000000000000007355d25caf6e7f2f0cb2812ca0e513bd026ed09dda65b177500fa31714e09ea0ded3a078b526bed3307f804d4b93b040000000000000000000000000000000002829ce3c021339ccb5caf3e187f6370e1e2a311dec9b75363117063ab2015603ff52c3d3b98f19c2f65575e99e8b78c";
+            
+            // Expected G1 point output (x,y) = 128 bytes
+            bytes memory EXPECTED_OUTPUT = hex"0000000000000000000000000000000000e7f4568a82b4b7dc1f14c6aaa055edf51502319c723c4dc2688c7fe5944c213f510328082396515734b6612c4e7bb700000000000000000000000000000000126b855e9e69b1f691f816e48ac6977664d24d99f8724868a184186469ddfd4617367e94527d4b74fc86413483afb35b000000000000000000000000000000000caead0fd7b6176c01436833c79d305c78be307da5f6af6c133c47311def6ff1e0babf57a0fb5539fce7ee12407b0a42000000000000000000000000000000001498aadcf7ae2b345243e281ae076df6de84455d766ab6fcdaad71fab60abb2e8b980a440043cd305db09d283c895e3d";
+            bytes32 expectedHash = keccak256(EXPECTED_OUTPUT);
+            
+            // Call precompile
+            (bool success, bytes memory output) = MAP_FP_TO_G1_PRECOMPILE.staticcall(input);
+
+            require(success, "Map Fp to G1 precompile call failed");
+
+            bytes32 actualHash = keccak256(output);
+            require(actualHash == expectedHash, "Unexpected Map Fp to G1 output");
+        }
+
+        /// @notice Tests mapping a field element in Fp2 to a G2 point
+        function testMapFp2ToG2() public view {
+            // Input is a single Fp2 element (64 bytes: a + b*i where a,b are each 32 bytes)
+            bytes memory input = hex"00000000000000000000000000000000156c8a6a2c184569d69a76be144b5cdc5141d2d2ca4fe341f011e25e3969c55ad9e9b9ce2eb833c81a908e5fa4ac5f03";
+            
+            // Expected G2 point output (x.a, x.b, y.a, y.b) = 256 bytes
+            bytes memory EXPECTED_OUTPUT = hex"00000000000000000000000000000000184bb665c37ff561a89ec2122dd343f20e0f4cbcaec84e3c3052ea81d1834e192c426074b02ed3dca4e7676ce4ce48ba0000000000000000000000000000000004407b8d35af4dacc809927071fc0405218f1401a6d15af775810e4e460064bcc9468beeba82fdc751be70476c888bf3";
+            bytes32 expectedHash = keccak256(EXPECTED_OUTPUT);
+            
+            // Call precompile
+            (bool success, bytes memory output) = MAP_FP2_TO_G2_PRECOMPILE.staticcall(input);
+
+            require(success, "Map Fp2 to G2 precompile call failed");
+
+            bytes32 actualHash = keccak256(output);
+            require(actualHash == expectedHash, "Unexpected Map Fp2 to G2 output");
+        }
+
+        /// @notice Tests BLS pairing check operation
+        function testPairing() public view {
+            // Input consists of a sequence of points (G1, G2) to check e(P1, Q1) * e(P2, Q2) * ... * e(Pn, Qn) = 1
+            // Each pair requires 384 bytes: 128 bytes for G1 point + 256 bytes for G2 point
+            
+            // Example: Single pair that should give a result of 1 (valid pairing)
+            bytes memory input = hex"0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801000000000000000000000000000000000606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be";
+            
+            // Call precompile - output should be 32 bytes with value 1 for a valid pairing
+            (bool success, bytes memory output) = PAIRING_CHECK_PRECOMPILE.staticcall(input);
+
+            require(success, "Pairing check precompile call failed");
+            require(output.length == 32, "Invalid pairing output length");
+            
+            // Check that the result is 1 (true) for a valid pairing
+            uint256 result = abi.decode(output, (uint256));
+            require(result == 1, "Pairing check should succeed with result 1");
+            
+            // Test an invalid pairing as well
+            bytes memory invalidInput = hex"0000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000017f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb0000000000000000000000000000000008b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e100000000000000000000000000000000024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb80000000000000000000000000000000013e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e000000000000000000000000000000000d1b3cc2c7027888be51d9ef691d77bcb679afda66c73f17f9ee3837a55024f78c71363275a75d75d86bab79f74782aa0000000000000000000000000000000013fa4d4a0ad8b1ce186ed5061789213d993923066dddaf1040bc3ff59f825c78df74f2d75467e25e0f55f8a00fa030ed"; // Changed last byte
+            
+            (success, output) = PAIRING_CHECK_PRECOMPILE.staticcall(invalidInput);
+            require(success, "Invalid pairing check precompile call failed");
+            result = abi.decode(output, (uint256));
+            require(result == 0, "Invalid pairing check should fail with result 0");
+        }
+    }

@@ -316,4 +316,29 @@ fn bls_precompile_test(bytecode: Vec<u8>) {
     rt.expect_gas_available(10_000_000_000u64);
     rt.expect_gas_available(10_000_000_000u64);
     util::invoke_contract(&rt, &g2_msm_params);
+
+    // // Test Map Fp to G1
+    // let mut map_fp_to_g1_params = vec![];
+    // map_fp_to_g1_params.extend_from_slice(&hex::decode("e38f2f12").unwrap()); // function selector for "testMapFpToG1()"
+    
+    // rt.expect_gas_available(10_000_000_000u64);
+    // rt.expect_gas_available(10_000_000_000u64);
+    // util::invoke_contract(&rt, &map_fp_to_g1_params);
+    
+    // // Test Map Fp2 to G2
+    // let mut map_fp2_to_g2_params = vec![];
+    // map_fp2_to_g2_params.extend_from_slice(&hex::decode("f4f4dab1").unwrap()); // function selector for "testMapFp2ToG2()"
+    
+    // rt.expect_gas_available(10_000_000_000u64);
+    // rt.expect_gas_available(10_000_000_000u64);
+    // util::invoke_contract(&rt, &map_fp2_to_g2_params);
+    
+    // // Test Pairing
+    // let mut pairing_params = vec![];
+    // pairing_params.extend_from_slice(&hex::decode("25a753ef").unwrap()); // function selector for "testPairing()"
+    
+    // rt.expect_gas_available(10_000_000_000u64);
+    // rt.expect_gas_available(10_000_000_000u64);
+    // util::invoke_contract(&rt, &pairing_params);
+
 }
