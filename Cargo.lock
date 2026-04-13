@@ -60,7 +60,7 @@ dependencies = [
  "alloy-sol-macro-input",
  "const-hex",
  "heck 0.5.0",
- "indexmap 2.13.0",
+ "indexmap 2.13.1",
  "proc-macro-error2",
  "proc-macro2",
  "quote",
@@ -908,7 +908,7 @@ dependencies = [
  "fvm_ipld_encoding",
  "fvm_ipld_hamt",
  "fvm_shared",
- "indexmap 2.13.0",
+ "indexmap 2.13.1",
  "integer-encoding",
  "lazy_static",
  "num-derive",
@@ -953,7 +953,7 @@ dependencies = [
  "fvm_ipld_hamt",
  "fvm_shared",
  "hex-literal",
- "indexmap 2.13.0",
+ "indexmap 2.13.1",
  "integer-encoding",
  "lazy_static",
  "log",
@@ -1067,7 +1067,7 @@ dependencies = [
  "fvm_shared",
  "hex",
  "hex-literal",
- "indexmap 2.13.0",
+ "indexmap 2.13.1",
  "integer-encoding",
  "k256",
  "lazy_static",
@@ -1602,9 +1602,9 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.13.0"
+version = "2.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7714e70437a7dc3ac8eb7e6f8df75fd8eb422675fc7678aff7364301092b1017"
+checksum = "45a8a2b9cb3e0b0c1803dbb0758ffac5de2f425b23c28f518faabd9d805342ff"
 dependencies = [
  "equivalent",
  "hashbrown 0.16.1",
@@ -2660,7 +2660,7 @@ version = "0.22.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "17b4795ff5edd201c7cd6dca065ae59972ce77d1b80fa0a84d94950ece7d1474"
 dependencies = [
- "indexmap 2.13.0",
+ "indexmap 2.13.1",
  "toml_datetime",
  "winnow",
 ]
