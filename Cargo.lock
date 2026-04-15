@@ -805,7 +805,7 @@ dependencies = [
  "num-traits",
  "once_cell",
  "p256",
- "rand 0.9.3",
+ "rand 0.9.4",
  "rstest",
  "serde",
  "serde_json",
@@ -890,7 +890,7 @@ dependencies = [
  "multihash-derive",
  "num-derive",
  "num-traits",
- "rand 0.9.3",
+ "rand 0.9.4",
  "serde",
  "test-case",
 ]
@@ -1075,7 +1075,7 @@ dependencies = [
  "multihash-codetable",
  "num-derive",
  "num-traits",
- "rand 0.9.3",
+ "rand 0.9.4",
  "rand_chacha 0.9.0",
  "regex",
  "serde",
@@ -1116,7 +1116,7 @@ dependencies = [
  "num-derive",
  "num-traits",
  "pretty_env_logger",
- "rand 0.9.3",
+ "rand 0.9.4",
  "regex",
  "serde",
  "serde_repr",
@@ -1239,9 +1239,9 @@ dependencies = [
 
 [[package]]
 name = "frc46_token"
-version = "14.0.0"
+version = "14.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74fddbac1d5221744443ce7dab4b991d4e8f3722d671c851c08ca6e95858c4b1"
+checksum = "891f9917156c52c5c1c3f95e083e3e21370b8044164ebf7894f74c02fa5c4a18"
 dependencies = [
  "cid",
  "frc42_dispatch",
@@ -2062,9 +2062,9 @@ dependencies = [
 
 [[package]]
 name = "rand"
-version = "0.9.3"
+version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ec095654a25171c2124e9e3393a930bddbffdc939556c914957a4c3e0a87166"
+checksum = "44c5af06bb1b7d3216d91932aed5265164bf384dc89cd6ba05cf59a35f5f76ea"
 dependencies = [
  "rand_chacha 0.9.0",
  "rand_core 0.9.3",
@@ -2218,7 +2218,7 @@ checksum = "c141e807189ad38a07276942c6623032d3753c8859c146104ac2e4d68865945a"
 dependencies = [
  "proptest",
  "rand 0.8.5",
- "rand 0.9.3",
+ "rand 0.9.4",
  "ruint-macro",
  "serde_core",
  "valuable",
@@ -2738,7 +2738,7 @@ dependencies = [
  "multihash-derive",
  "num-derive",
  "num-traits",
- "rand 0.9.3",
+ "rand 0.9.4",
  "rand_chacha 0.9.0",
  "serde",
 ]
